@@ -1,6 +1,7 @@
 package com.entiv.sakuramove;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
@@ -18,6 +19,13 @@ public class Main extends JavaPlugin {
         };
         getServer().getConsoleSender().sendMessage(message);
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
+
+        saveDefaultConfig();
+        PluginCommand command = Bukkit.getPluginCommand("SakuraMove");
+
+        if (command != null) {
+            command.setExecutor(new MainCommand());
+        }
     }
 
     @Override
