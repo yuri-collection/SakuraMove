@@ -39,12 +39,15 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        if (player.isSprinting() && !coolDownPlayers.contains(player.getUniqueId())) {
-            playerSprinting(player);
-            setCoolDown(player);
-        } else {
-            String message = config.getString("Message.CoolDown");
-            Message.sendActionBar(player, message);
+        if (player.isSprinting()) {
+
+            if (coolDownPlayers.contains(player.getUniqueId())) {
+                String message = config.getString("Message.CoolDown");
+                Message.sendActionBar(player, message);
+            } else {
+                playerSprinting(player);
+                setCoolDown(player);
+            }
         }
     }
 
@@ -63,6 +66,5 @@ public class PlayerListener implements Listener {
                 coolDownPlayers.remove(player.getUniqueId());
             }
         }.runTaskLaterAsynchronously(Main.getInstance(), coolDown);
-
     }
 }
