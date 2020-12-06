@@ -5,24 +5,20 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 
 public class PlayerListener implements Listener {
 
-    private static List<UUID> coolDownPlayers;
+    private final Map<UUID, Long> coolDownPlayers = new HashMap<>();
     private final FileConfiguration config = Main.getInstance().getConfig();
 
     PlayerListener() {
-        int coolDown = config.getInt("CoolDown");
-        if (coolDown != 0) {
-            coolDownPlayers = new ArrayList<>();
-        }
     }
 
     @EventHandler
@@ -39,7 +35,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        if (player.isSprinting() && !coolDownPlayers.contains(player.getUniqueId())) {
+        if (player.isSprinting() && !isCoolDown(player, coolDown)) {
             playerSprinting(player);
             setCoolDown(player);
         } else {
@@ -48,21 +44,24 @@ public class PlayerListener implements Listener {
         }
     }
 
+    @EventHandler
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        // gc
+        coolDownPlayers.remove(event.getPlayer().getUniqueId());
+    }
+
     private void playerSprinting(Player player) {
         Location location = player.getLocation();
         double power = config.getDouble("Power");
         player.setVelocity(location.getDirection().setY(0).multiply(power));
     }
 
-    private void setCoolDown(Player player) {
-        long coolDown = config.getLong("CoolDown") * 20;
-        coolDownPlayers.add(player.getUniqueId());
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                coolDownPlayers.remove(player.getUniqueId());
-            }
-        }.runTaskLaterAsynchronously(Main.getInstance(), coolDown);
+    private boolean isCoolDown(Player player, int coolDown) {
+        Long value = coolDownPlayers.get(player.getUniqueId());
+        return value != null && System.currentTimeMillis() - value < coolDown * 1000L;
+    }
 
+    private void setCoolDown(Player player) {
+        coolDownPlayers.put(player.getUniqueId(), System.currentTimeMillis());
     }
 }
