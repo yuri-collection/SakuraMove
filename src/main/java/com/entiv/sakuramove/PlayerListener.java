@@ -1,14 +1,10 @@
 package com.entiv.sakuramove;
 
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleSprintEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -25,7 +21,7 @@ public class PlayerListener implements Listener {
     PlayerListener() {
         int coolDown = config.getInt("CoolDown");
         if (coolDown != 0) {
-            coolDownPlayers = new ArrayList<java.util.UUID>();
+            coolDownPlayers = new ArrayList<>();
         }
     }
 

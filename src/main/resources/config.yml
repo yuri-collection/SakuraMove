@@ -6,4 +6,4 @@ CoolDown: 3
 
 Message:
   Reload: "&9&lSakuraMove &6&l>> &a插件已重载"
-  CoolDown: "&c冲刺技能暂未冷却完毕..."
+  CoolDown: "&c冲刺技能正在冷却中..."
