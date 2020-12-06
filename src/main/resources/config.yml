@@ -2,7 +2,8 @@
 Power: 1.0
 
 # 冲刺技能的冷却时间, 默认 1 秒, 设为 0 不启用冷却功能
-CoolDown: 1
+CoolDown: 3
 
 Message:
   Reload: "&9&lSakuraMove &6&l>> &a插件已重载"
+  CoolDown: "&c冲刺技能暂未冷却完毕..."
