@@ -35,7 +35,7 @@ public class PlayerListener implements Listener {
         if (player.isSprinting() && !isCoolDown(player, coolDown)) {
             playerSprinting(player);
             setCoolDown(player);
-        } else {
+        } else if (isCoolDown(player, coolDown)) {
             String message = config.getString("Message.CoolDown");
             Message.sendActionBar(player, message);
         }
