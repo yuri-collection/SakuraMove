@@ -50,8 +50,6 @@ public class Main extends JavaPlugin {
             plugin.reloadConfig();
 
             staminaManager.cancel();
-            staminaManager = null;
-
             staminaManager = new StaminaManager();
             staminaManager.start();
 
