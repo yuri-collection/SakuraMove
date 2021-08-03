@@ -1,6 +1,7 @@
 package com.entiv.sakuramove.action;
 
 import com.entiv.sakuramove.Main;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -20,15 +21,13 @@ public class DoubleJump extends MoveAction {
 
     private final double springPower;
 
-
-
     public DoubleJump(String path) {
         super(path);
 
         ConfigurationSection section = Main.getInstance().getConfig().getConfigurationSection("移动行为.二段跳");
         springPower = section.getDouble("冲刺力度");
 
-        JumpManager jumpingChecker = new JumpManager();
+        JumpingChecker jumpingChecker = new JumpingChecker();
         jumpingChecker.runTaskTimer(Main.getInstance(), 10, 10);
     }
 
@@ -36,14 +35,13 @@ public class DoubleJump extends MoveAction {
     protected Consumer<Player> behavior() {
         return player -> {
             Location location = player.getLocation();
-
-            disable(player);
-
             player.setVelocity(location.getDirection().multiply(springPower).setY(power));
             player.playSound(location, Sound.ENTITY_BAT_TAKEOFF, 10, 0);
             player.getWorld().spawnParticle(Particle.CRIT, location, 10);
 
             jumpingPlayer.add(player.getUniqueId());
+
+            disable(player);
         };
     }
 
@@ -54,6 +52,7 @@ public class DoubleJump extends MoveAction {
 
     public void disable(Player player) {
         player.setAllowFlight(false);
+        player.setFlying(false);
     }
 
     public static DoubleJump getInstance() {
@@ -63,11 +62,10 @@ public class DoubleJump extends MoveAction {
     @Override
     public void clearCache(Player player) {
         super.clearCache(player);
-
         jumpingPlayer.remove(player.getUniqueId());
     }
 
-    public class JumpManager extends BukkitRunnable {
+    public class JumpingChecker extends BukkitRunnable {
 
         @Override
         public void run() {
@@ -79,7 +77,6 @@ public class DoubleJump extends MoveAction {
                 }
             }
         }
-
     }
 }
 

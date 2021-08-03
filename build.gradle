@@ -53,17 +53,21 @@ repositories {
         name "PlaceholderAPI"
         url 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
     }
-}
 
-processResources {
-    from(sourceSets.main.resources.srcDirs) {
-        include 'plugin.yml'
-        expand(
-                version: project.version,
-                name: rootProject.name.toLowerCase()
-        )
+    maven {
+        url 'https://papermc.io/repo/repository/maven-public/'
     }
 }
+
+//processResources {
+//    from(sourceSets.main.resources.srcDirs) {
+//        include 'plugin.yml'
+//        expand(
+//                version: project.version,
+//                name: rootProject.name.toLowerCase()
+//        )
+//    }
+//}
 
 
 dependencies {
@@ -72,8 +76,9 @@ dependencies {
 //    compileOnly 'world.bentobox:bentobox:1.16.1-SNAPSHOT'
 //    compileOnly group: "com.comphenix.protocol", name: "ProtocolLib", version: "4.6.0";
 //    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
-//    compileOnly 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
+//    compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
+//    compileOnly 'com.destroystokyo.paper:paper-api:1.17.1-R0.1-SNAPSHOT'
+    compileOnly 'io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT'
 //    compileOnly 'org.jetbrains:annotations:16.0.2'
 //    compileOnly "com.github.MilkBowl:VaultAPI:1.7"
 //    compileOnly 'me.clip:placeholderapi:2.10.9'

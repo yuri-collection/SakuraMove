@@ -30,7 +30,6 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         Bukkit.getPluginManager().registerEvents(new DoubleJumpListener(), this);
 
-        saveResource("config.yml", true);
         saveDefaultConfig();
     }
 
@@ -50,8 +49,6 @@ public class Main extends JavaPlugin {
             plugin.reloadConfig();
 
             staminaManager.cancel();
-            staminaManager = null;
-
             staminaManager = new StaminaManager();
             staminaManager.start();
 

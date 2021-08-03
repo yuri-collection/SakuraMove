@@ -19,7 +19,6 @@ public class StaminaManager extends BukkitRunnable {
     private final Map<UUID, Integer> playerStamina = new HashMap<>();
     private final Map<UUID, Long> recoveryStaminaCoolDown = new HashMap<>();
 
-
     public void showProgressPercentage(Player player) {
 
         int stamina = getStamina(player);
@@ -44,15 +43,14 @@ public class StaminaManager extends BukkitRunnable {
 
     public void start() {
         ConfigurationSection config = Main.getInstance().getConfig().getConfigurationSection("体力恢复设置");
-        int tick = config.getInt("恢复速度");
-        runTaskTimer(Main.getInstance(), 0, tick);
+        runTaskTimer(Main.getInstance(), 0, config == null ? 1 : config.getInt("恢复速度"));
     }
 
     @Override
     public void run() {
         Iterator<UUID> iterator = playerStamina.keySet().iterator();
 
-        if (iterator.hasNext()) {
+        while (iterator.hasNext()) {
             UUID uuid = iterator.next();
 
             Player player = Bukkit.getPlayer(uuid);
