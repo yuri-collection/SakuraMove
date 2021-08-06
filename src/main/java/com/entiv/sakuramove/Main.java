@@ -1,12 +1,14 @@
 package com.entiv.sakuramove;
 
+import com.entiv.sakuramove.action.DamageableJump;
 import com.entiv.sakuramove.listener.DoubleJumpListener;
-import com.entiv.sakuramove.listener.PlayerListener;
+import com.entiv.sakuramove.listener.DamageableJumpListener;
+import com.entiv.sakuramove.listener.SpringListener;
 import com.entiv.sakuramove.manager.StaminaManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
@@ -14,12 +16,13 @@ public class Main extends JavaPlugin {
     private static Main plugin;
     private StaminaManager staminaManager;
 
+    private DoubleJumpListener doubleJump;
+    private DamageableJumpListener damageableJump;
+
     @Override
     public void onEnable() {
 
         plugin = this;
-        staminaManager = new StaminaManager();
-        staminaManager.start();
 
         String[] message = {
                 "§a樱花移动插件§e v" + getDescription().getVersion() + " §a已启用",
@@ -27,10 +30,14 @@ public class Main extends JavaPlugin {
         };
         getServer().getConsoleSender().sendMessage(message);
 
-        Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
-        Bukkit.getPluginManager().registerEvents(new DoubleJumpListener(), this);
 
+        damageableJump = new DamageableJumpListener();
+        doubleJump = new DoubleJumpListener();
+
+        reload();
         saveDefaultConfig();
+
+        Bukkit.getPluginManager().registerEvents(new SpringListener(), this);
     }
 
     @Override
@@ -45,16 +52,39 @@ public class Main extends JavaPlugin {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender.isOp()) {
-            Main plugin = Main.getInstance();
-            plugin.reloadConfig();
 
-            staminaManager.cancel();
-            staminaManager = new StaminaManager();
-            staminaManager.start();
+            reload();
 
             Message.send(sender, plugin.getConfig().getString("Message.Reload"));
         }
         return true;
+    }
+
+    public void reload() {
+
+        reloadConfig();
+
+        if (staminaManager != null) {
+            staminaManager.cancel();
+        }
+
+        staminaManager = new StaminaManager();
+        staminaManager.start();
+
+        boolean enableFallDamage = getConfig().getBoolean("移动行为.二段跳.摔落伤害");
+
+        HandlerList.unregisterAll(damageableJump);
+        HandlerList.unregisterAll(doubleJump);
+
+        if (enableFallDamage) {
+            Bukkit.getPluginManager().registerEvents(damageableJump, this);
+            DamageableJump.getInstance().disableJumpingChecker();
+
+        } else {
+            Bukkit.getPluginManager().registerEvents(doubleJump, this);
+            DamageableJump.getInstance().enableJumpingChecker();
+        }
+
     }
 
     public StaminaManager getStaminaManager() {

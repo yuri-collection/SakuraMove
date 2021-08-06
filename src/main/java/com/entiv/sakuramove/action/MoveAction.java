@@ -10,7 +10,6 @@ import java.util.function.Consumer;
 
 public abstract class MoveAction {
 
-    private final StaminaManager staminaManager = Main.getInstance().getStaminaManager();
 
     protected final int stamina;
     protected final double power;
@@ -35,13 +34,20 @@ public abstract class MoveAction {
 
     public void accept(Player player) {
 
+        StaminaManager staminaManager = getStaminaManager();
+
         if (staminaManager.getStamina(player) < stamina) return;
 
         staminaManager.decreaseStamina(player, stamina);
         behavior().accept(player);
     }
 
+    public StaminaManager getStaminaManager() {
+        return Main.getInstance().getStaminaManager();
+    }
+
     public void clearCache(Player player) {
+        StaminaManager staminaManager = getStaminaManager();
         staminaManager.clearCache(player);
     }
 
