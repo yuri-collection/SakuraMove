@@ -31,10 +31,8 @@
   vip1: 20
   # vip2 体力值, 权限 sakuramove.stamina.vip2
   vip2: 25
-  vip3: 30
   # svp 体力值, 权限 sakuramove.stamina.svp
   svp: 35
-  mvp: 40
 
 Message:
   Reload: "&9&lSakuraMove &6&l>> &a插件已重载"
