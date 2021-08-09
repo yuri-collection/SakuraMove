@@ -12,7 +12,7 @@ import org.bukkit.event.player.*;
 
 public class DoubleJumpListener implements Listener {
 
-    private final DoubleJump doubleJump = DamageableJump.getInstance();
+    private final DoubleJump doubleJump = DoubleJump.getInstance();
 
     @EventHandler
     public void onDoubleJump(PlayerToggleFlightEvent event) {
@@ -46,7 +46,7 @@ public class DoubleJumpListener implements Listener {
     }
 
     @EventHandler
-    public void setFly(PlayerJoinEvent event) {
+    public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         doubleJump.enable(player);
     }

@@ -1,28 +1,33 @@
 package com.entiv.sakuramove.action;
 
 import com.entiv.sakuramove.Main;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
-public class DamageableJump extends DoubleJump {
+public class DamageableJump extends MoveAction {
 
     private static final DamageableJump damageableJump = new DamageableJump("移动行为.二段跳");
-    private final List<UUID> jumpingPlayer = new ArrayList<>();
-
-    private JumpingChecker jumpingChecker;
+    private final double springPower;
 
     public DamageableJump(String path) {
         super(path);
+
+        ConfigurationSection section = Main.getInstance().getConfig().getConfigurationSection("移动行为.二段跳");
+        springPower = section.getDouble("冲刺力度");
     }
 
     @Override
     public void accept(Player player) {
         super.accept(player);
-        jumpingPlayer.add(player.getUniqueId());
     }
 
     public static DamageableJump getInstance() {
@@ -32,32 +37,30 @@ public class DamageableJump extends DoubleJump {
     @Override
     public void clearCache(Player player) {
         super.clearCache(player);
-        jumpingPlayer.remove(player.getUniqueId());
     }
 
-    public void enableJumpingChecker() {
-        jumpingChecker = new JumpingChecker();
-        jumpingChecker.runTaskTimer(Main.getInstance(), 10, 5);
+    @Override
+    protected Consumer<Player> behavior() {
+        return player -> {
+            Location location = player.getLocation();
+            player.setVelocity(location.getDirection().multiply(springPower).setY(power));
+            player.playSound(location, Sound.ENTITY_BAT_TAKEOFF, 10, 0);
+            player.getWorld().spawnParticle(Particle.CRIT, location, 15);
+
+            disable(player);
+        };
     }
 
-    public void disableJumpingChecker() {
-        if (jumpingChecker != null) {
-            jumpingChecker.cancel();
+    public void enable(Player player) {
+        if (getStaminaManager().hasStamina(player, stamina)) {
+            player.setAllowFlight(true);
+            player.setFlying(false);
         }
     }
 
-    public class JumpingChecker extends BukkitRunnable {
-
-        @Override
-        public void run() {
-            for (UUID uuid : jumpingPlayer) {
-                Player player = Main.getInstance().getServer().getPlayer(uuid);
-
-                if (player != null && player.isOnGround()) {
-                    enable(player);
-                }
-            }
-        }
+    public void disable(Player player) {
+        player.setAllowFlight(false);
+        player.setFlying(false);
     }
 }
 

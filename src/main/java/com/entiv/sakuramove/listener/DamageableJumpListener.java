@@ -20,6 +20,10 @@ public class DamageableJumpListener implements Listener {
             return;
         }
 
+        if (!player.isOp() && player.hasPermission("sakuramove.fly")) {
+            return;
+        }
+
         doubleJump.accept(player);
         event.setCancelled(true);
     }

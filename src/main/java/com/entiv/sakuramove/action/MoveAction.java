@@ -10,7 +10,6 @@ import java.util.function.Consumer;
 
 public abstract class MoveAction {
 
-
     protected final int stamina;
     protected final double power;
 

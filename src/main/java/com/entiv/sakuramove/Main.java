@@ -1,6 +1,7 @@
 package com.entiv.sakuramove;
 
 import com.entiv.sakuramove.action.DamageableJump;
+import com.entiv.sakuramove.action.DoubleJump;
 import com.entiv.sakuramove.listener.DoubleJumpListener;
 import com.entiv.sakuramove.listener.DamageableJumpListener;
 import com.entiv.sakuramove.listener.SpringListener;
@@ -30,14 +31,15 @@ public class Main extends JavaPlugin {
         };
         getServer().getConsoleSender().sendMessage(message);
 
-
         damageableJump = new DamageableJumpListener();
         doubleJump = new DoubleJumpListener();
 
         reload();
         saveDefaultConfig();
 
-        Bukkit.getPluginManager().registerEvents(new SpringListener(), this);
+        if (getConfig().getBoolean("冲刺.开启")) {
+            Bukkit.getPluginManager().registerEvents(new SpringListener(), this);
+        }
     }
 
     @Override
@@ -76,13 +78,19 @@ public class Main extends JavaPlugin {
         HandlerList.unregisterAll(damageableJump);
         HandlerList.unregisterAll(doubleJump);
 
+        if (!getConfig().getBoolean("二段跳.开启")) return;
+
         if (enableFallDamage) {
             Bukkit.getPluginManager().registerEvents(damageableJump, this);
-            DamageableJump.getInstance().disableJumpingChecker();
+            DoubleJump.getInstance().disableJumpingChecker();
 
         } else {
             Bukkit.getPluginManager().registerEvents(doubleJump, this);
-            DamageableJump.getInstance().enableJumpingChecker();
+            DoubleJump.getInstance().enableJumpingChecker();
+            Bukkit.getOnlinePlayers().forEach(player -> {
+                player.setAllowFlight(true);
+                player.setFlying(false);
+            });
         }
 
     }

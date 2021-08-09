@@ -69,6 +69,9 @@ public class StaminaManager extends BukkitRunnable {
         Integer endurance = playerStamina.get(player.getUniqueId());
         return endurance == null ? getMaxStamina(player) : endurance;
     }
+    public boolean hasStamina(Player player, int stamina) {
+        return getStamina(player) >= stamina;
+    }
 
     public void decreaseStamina(Player player, int stamina) {
         UUID uniqueId = player.getUniqueId();

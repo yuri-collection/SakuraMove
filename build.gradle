@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.entiv'
-version '1.0'
+version '1.1'
 
 repositories {
 
@@ -59,6 +59,18 @@ repositories {
     }
 }
 
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+
+        duplicatesStrategy = 'INCLUDE'
+
+        include 'plugin.yml'
+        expand(
+                version: project.version,
+                name: project.name.toLowerCase()
+        )
+    }
+}
 
 dependencies {
 //    compileOnly 'fr.xephi:authme:5.6.0-SNAPSHOT'
