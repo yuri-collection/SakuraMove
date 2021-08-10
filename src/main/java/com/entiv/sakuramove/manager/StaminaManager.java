@@ -14,12 +14,20 @@ import java.util.*;
 public class StaminaManager extends BukkitRunnable {
 
     private static final String ICON = "█";
-    private static final String CALIBRATION = "▉";
 
     private final Map<UUID, Integer> playerStamina = new HashMap<>();
     private final Map<UUID, Long> recoveryStaminaCoolDown = new HashMap<>();
 
     public void showProgressPercentage(Player player) {
+
+        FileConfiguration config = Main.getInstance().getConfig();
+        ConfigurationSection section = config.getConfigurationSection("体力展示设置.ActionBar");
+
+        if (section == null) throw new NullPointerException("配置文件异常! 请检查配置文件!");
+
+        String icon = section.getString("体力槽样式");
+        String emptyColor = section.getString("空体力槽颜色代码");
+        String fullColor = section.getString("体力槽颜色代码");
 
         int stamina = getStamina(player);
         int maxStamina = getMaxStamina(player);
@@ -27,16 +35,12 @@ public class StaminaManager extends BukkitRunnable {
         StringBuilder progressBuilder = new StringBuilder();
 
         for (int i = 0; i < maxStamina; i++) {
-            progressBuilder.append(ICON);
-        }
-
-        for (int i = 100; i < maxStamina; i += 20) {
-            progressBuilder.replace(i - 1, i, CALIBRATION);
+            progressBuilder.append(icon);
         }
 
         String progress = progressBuilder
-                .insert(stamina, Message.toColor("&7"))
-                .insert(0, Message.toColor("&a"))
+                .insert(stamina, Message.toColor(emptyColor))
+                .insert(0, Message.toColor(fullColor))
                 .toString();
         Message.sendActionBar(player, progress);
     }
@@ -55,6 +59,8 @@ public class StaminaManager extends BukkitRunnable {
 
             Player player = Bukkit.getPlayer(uuid);
 
+            if (player == null) return;
+
             if (!isRecoveryStaminaCoolDown(player)) {
                 increaseStamina(player, 1);
             }
@@ -69,6 +75,7 @@ public class StaminaManager extends BukkitRunnable {
         Integer endurance = playerStamina.get(player.getUniqueId());
         return endurance == null ? getMaxStamina(player) : endurance;
     }
+
     public boolean hasStamina(Player player, int stamina) {
         return getStamina(player) >= stamina;
     }

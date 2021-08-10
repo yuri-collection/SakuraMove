@@ -1,6 +1,5 @@
 package com.entiv.sakuramove;
 
-import com.entiv.sakuramove.action.DamageableJump;
 import com.entiv.sakuramove.action.DoubleJump;
 import com.entiv.sakuramove.listener.DoubleJumpListener;
 import com.entiv.sakuramove.listener.DamageableJumpListener;
@@ -37,7 +36,7 @@ public class Main extends JavaPlugin {
         reload();
         saveDefaultConfig();
 
-        if (getConfig().getBoolean("冲刺.开启")) {
+        if (getConfig().getBoolean("移动行为.冲刺.开启")) {
             Bukkit.getPluginManager().registerEvents(new SpringListener(), this);
         }
     }
@@ -78,7 +77,7 @@ public class Main extends JavaPlugin {
         HandlerList.unregisterAll(damageableJump);
         HandlerList.unregisterAll(doubleJump);
 
-        if (!getConfig().getBoolean("二段跳.开启")) return;
+        if (!getConfig().getBoolean("移动行为.二段跳.开启")) return;
 
         if (enableFallDamage) {
             Bukkit.getPluginManager().registerEvents(damageableJump, this);
