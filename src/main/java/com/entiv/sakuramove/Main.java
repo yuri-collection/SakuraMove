@@ -3,12 +3,14 @@ package com.entiv.sakuramove;
 import com.entiv.sakuramove.action.DoubleJump;
 import com.entiv.sakuramove.listener.DoubleJumpListener;
 import com.entiv.sakuramove.listener.DamageableJumpListener;
+import com.entiv.sakuramove.listener.SpigotJumpListener;
 import com.entiv.sakuramove.listener.SpringListener;
 import com.entiv.sakuramove.manager.StaminaManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
@@ -16,8 +18,7 @@ public class Main extends JavaPlugin {
     private static Main plugin;
     private StaminaManager staminaManager;
 
-    private DoubleJumpListener doubleJump;
-    private DamageableJumpListener damageableJump;
+    private Listener doubleJump, damageableJump;
 
     @Override
     public void onEnable() {
@@ -30,7 +31,12 @@ public class Main extends JavaPlugin {
         };
         getServer().getConsoleSender().sendMessage(message);
 
-        damageableJump = new DamageableJumpListener();
+        if (isPaperFork()) {
+            damageableJump = new DamageableJumpListener();
+        } else {
+            damageableJump = new SpigotJumpListener();
+        }
+
         doubleJump = new DoubleJumpListener();
 
         reload();
@@ -100,5 +106,14 @@ public class Main extends JavaPlugin {
 
     public static Main getInstance() {
         return plugin;
+    }
+
+    private static boolean isPaperFork() {
+        try {
+            Class.forName("com.destroystokyo.paper.event.player.PlayerJumpEvent");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
 }

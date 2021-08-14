@@ -2,6 +2,7 @@ package com.entiv.sakuramove.listener;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import com.entiv.sakuramove.action.DamageableJump;
+import com.entiv.sakuramove.event.SpigotJumpEvent;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,20 +17,20 @@ public class DamageableJumpListener implements Listener {
     public void onDoubleJump(PlayerToggleFlightEvent event) {
         Player player = event.getPlayer();
 
-        if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR || player.hasPermission("sakuramove.fly")) {
-            return;
+        if (doubleJump.canAccept(player)) {
+            doubleJump.accept(player);
+            event.setCancelled(true);
         }
-
-        if (!player.isOp() && player.hasPermission("sakuramove.fly")) {
-            return;
-        }
-
-        doubleJump.accept(player);
-        event.setCancelled(true);
     }
 
     @EventHandler
     public void onPlayerJump(PlayerJumpEvent event) {
+        Player player = event.getPlayer();
+        doubleJump.enable(player);
+    }
+
+    @EventHandler
+    public void onPlayerJump(SpigotJumpEvent event) {
         Player player = event.getPlayer();
         doubleJump.enable(player);
     }

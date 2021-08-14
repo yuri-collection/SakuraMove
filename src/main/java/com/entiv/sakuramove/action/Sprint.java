@@ -6,9 +6,12 @@ import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -32,6 +35,25 @@ public class Sprint extends MoveAction {
             player.setVelocity(location.getDirection().setY(0).multiply(power));
             world.spawnParticle(Particle.CRIT, location, 10);
         };
+    }
+
+    @Override
+    public boolean canAccept(Player player) {
+        ItemStack itemStack = player.getInventory().getItemInMainHand();
+
+        FileConfiguration config = Main.getInstance().getConfig();
+        List<String> allowItems = config.getStringList("移动行为.冲刺.允许物品");
+
+        for (String allowItem : allowItems) {
+            boolean isAllowItem = itemStack.getType().toString().contains(allowItem);
+
+            if (!isAllowItem) continue;
+
+            if (player.isSprinting() && !sprint.isCoolDown(player)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isCoolDown(Player player) {

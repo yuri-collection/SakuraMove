@@ -1,6 +1,7 @@
 package com.entiv.sakuramove.action;
 
 import com.entiv.sakuramove.Main;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -40,6 +41,15 @@ public class DoubleJump extends MoveAction {
             player.getWorld().spawnParticle(Particle.CRIT, location, 10);
 
         };
+    }
+
+    @Override
+    public boolean canAccept(Player player) {
+        if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR || player.hasPermission("sakuramove.fly")) {
+            return false;
+        }
+
+        return player.isOp() || !player.hasPermission("sakuramove.fly");
     }
 
     public void enable(Player player) {

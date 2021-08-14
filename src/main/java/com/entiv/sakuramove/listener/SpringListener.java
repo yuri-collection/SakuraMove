@@ -28,20 +28,9 @@ public class SpringListener implements Listener {
             return;
         }
 
-        ItemStack itemStack = event.getPlayer().getInventory().getItemInMainHand();
-
-        FileConfiguration config = Main.getInstance().getConfig();
-        List<String> allowItems = config.getStringList("移动行为.冲刺.允许物品");
-
-        for (String allowItem : allowItems) {
-            boolean isAllowItem = itemStack.getType().toString().contains(allowItem);
-
-            if (!isAllowItem) continue;
-
-            if (player.isSprinting() && !sprint.isCoolDown(player)) {
-                sprint.accept(player);
-                sprint.setCoolDown(player);
-            }
+        if (sprint.canAccept(player)) {
+            sprint.accept(player);
+            sprint.setCoolDown(player);
         }
     }
 

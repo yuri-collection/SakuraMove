@@ -13,8 +13,6 @@ import java.util.*;
 //TODO 增加消耗体力时的进度条扣除动画, 需要单独弄一个类渲染, 数据和展示分离
 public class StaminaManager extends BukkitRunnable {
 
-    private static final String ICON = "█";
-
     private final Map<UUID, Integer> playerStamina = new HashMap<>();
     private final Map<UUID, Long> recoveryStaminaCoolDown = new HashMap<>();
 

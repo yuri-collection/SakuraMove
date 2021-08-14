@@ -51,4 +51,6 @@ public abstract class MoveAction {
     }
 
     protected abstract Consumer<Player> behavior();
+
+    public abstract boolean canAccept(Player player);
 }

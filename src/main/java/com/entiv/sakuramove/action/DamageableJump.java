@@ -1,6 +1,7 @@
 package com.entiv.sakuramove.action;
 
 import com.entiv.sakuramove.Main;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -26,20 +27,6 @@ public class DamageableJump extends MoveAction {
     }
 
     @Override
-    public void accept(Player player) {
-        super.accept(player);
-    }
-
-    public static DamageableJump getInstance() {
-        return damageableJump;
-    }
-
-    @Override
-    public void clearCache(Player player) {
-        super.clearCache(player);
-    }
-
-    @Override
     protected Consumer<Player> behavior() {
         return player -> {
             Location location = player.getLocation();
@@ -49,6 +36,15 @@ public class DamageableJump extends MoveAction {
 
             disable(player);
         };
+    }
+
+    @Override
+    public boolean canAccept(Player player) {
+        if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR || player.hasPermission("sakuramove.fly")) {
+            return false;
+        }
+
+        return player.isOp() || !player.hasPermission("sakuramove.fly");
     }
 
     public void enable(Player player) {
@@ -61,6 +57,20 @@ public class DamageableJump extends MoveAction {
     public void disable(Player player) {
         player.setAllowFlight(false);
         player.setFlying(false);
+    }
+
+    @Override
+    public void accept(Player player) {
+        super.accept(player);
+    }
+
+    public static DamageableJump getInstance() {
+        return damageableJump;
+    }
+
+    @Override
+    public void clearCache(Player player) {
+        super.clearCache(player);
     }
 }
 
