@@ -35,6 +35,7 @@ public class SpigotJumpListener implements Listener {
         }
         if (player.isOnGround()) {
             resetPlayer(player);
+            doubleJump.disable(player);
             return;
         }
 
