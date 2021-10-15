@@ -60,6 +60,9 @@
     体力槽样式: "█"
     空体力槽颜色代码: "&7"
     体力槽颜色代码: "&a"
+  BossBar:
+    开启: true
+    标题: "&a体力值"
 
 Message:
   Reload: "&9&lSakuraMove &6&l>> &a插件已重载"

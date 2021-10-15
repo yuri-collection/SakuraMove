@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 
-public class ActionbarProgress implements Progress {
+public class ActionBarProgress implements Progress {
 
     @Override
     public void show(Player player, int before, int after) {
