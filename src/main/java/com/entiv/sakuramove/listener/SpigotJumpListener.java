@@ -1,6 +1,6 @@
 package com.entiv.sakuramove.listener;
 
-import com.entiv.sakuramove.action.DamageableJump;
+import com.entiv.sakuramove.action.DoubleJump;
 import com.entiv.sakuramove.event.SpigotJumpEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -11,7 +11,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 
 import java.util.HashMap;
@@ -24,7 +23,7 @@ public class SpigotJumpListener implements Listener {
     private final Map<UUID, Integer> hasJumped = new HashMap<>();
     private final Map<UUID, Boolean> wasAirborn = new HashMap<>();
 
-    private final DamageableJump doubleJump = DamageableJump.getInstance();
+    private final DoubleJump doubleJump = DoubleJump.getInstance();
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void playerInAir(PlayerMoveEvent event) {
@@ -74,11 +73,5 @@ public class SpigotJumpListener implements Listener {
     public void onPlayerJump(SpigotJumpEvent event) {
         Player player = event.getPlayer();
         doubleJump.enable(player);
-    }
-
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-        doubleJump.clearCache(player);
     }
 }

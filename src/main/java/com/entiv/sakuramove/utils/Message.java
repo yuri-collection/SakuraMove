@@ -1,4 +1,4 @@
-package com.entiv.sakuramove;
+package com.entiv.sakuramove.utils;
 
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ComponentBuilder;

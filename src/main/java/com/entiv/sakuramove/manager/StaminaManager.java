@@ -1,113 +1,27 @@
 package com.entiv.sakuramove.manager;
 
 import com.entiv.sakuramove.Main;
-import com.entiv.sakuramove.Message;
-import org.bukkit.Bukkit;
+import com.entiv.sakuramove.utils.CooldownManager;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
-//TODO 增加消耗体力时的进度条扣除动画, 需要单独弄一个类渲染, 数据和展示分离
-public class StaminaManager extends BukkitRunnable {
+public class StaminaManager {
 
-    private final Map<UUID, Integer> playerStamina = new HashMap<>();
-    private final Map<UUID, Long> recoveryStaminaCoolDown = new HashMap<>();
+    public final CooldownManager cooldownManager = new CooldownManager(Main.getInstance());
+    public final Map<UUID, StaminaPlayer> players = new HashMap<>();
 
-    public void showProgressPercentage(Player player) {
+    public StaminaPlayer getPlayer(Player player) {
+        return players.compute(player.getUniqueId(), (k, v) -> v == null ? new StaminaPlayer(player, loadMaxStamina(player)) : v);
+    }
+
+    private int loadMaxStamina(Player player) {
 
         FileConfiguration config = Main.getInstance().getConfig();
-        ConfigurationSection section = config.getConfigurationSection("体力展示设置.ActionBar");
-
-        if (section == null) throw new NullPointerException("配置文件异常! 请检查配置文件!");
-
-        String icon = section.getString("体力槽样式");
-        String emptyColor = section.getString("空体力槽颜色代码");
-        String fullColor = section.getString("体力槽颜色代码");
-
-        int stamina = getStamina(player);
-        int maxStamina = getMaxStamina(player);
-
-        StringBuilder progressBuilder = new StringBuilder();
-
-        for (int i = 0; i < maxStamina; i++) {
-            progressBuilder.append(icon);
-        }
-
-        String progress = progressBuilder
-                .insert(stamina, Message.toColor(emptyColor))
-                .insert(0, Message.toColor(fullColor))
-                .toString();
-        Message.sendActionBar(player, progress);
-    }
-
-    public void start() {
-        ConfigurationSection config = Main.getInstance().getConfig().getConfigurationSection("体力恢复设置");
-        runTaskTimer(Main.getInstance(), 0, config == null ? 1 : config.getInt("恢复速度"));
-    }
-
-    @Override
-    public void run() {
-        Iterator<UUID> iterator = playerStamina.keySet().iterator();
-
-        while (iterator.hasNext()) {
-            UUID uuid = iterator.next();
-
-            Player player = Bukkit.getPlayer(uuid);
-
-            if (player == null) return;
-
-            if (!isRecoveryStaminaCoolDown(player)) {
-                increaseStamina(player, 1);
-            }
-
-            if (getStamina(player) >= getMaxStamina(player)) {
-                iterator.remove();
-            }
-        }
-    }
-
-    public int getStamina(Player player) {
-        Integer endurance = playerStamina.get(player.getUniqueId());
-        return endurance == null ? getMaxStamina(player) : endurance;
-    }
-
-    public boolean hasStamina(Player player, int stamina) {
-        return getStamina(player) >= stamina;
-    }
-
-    public void decreaseStamina(Player player, int stamina) {
-        UUID uniqueId = player.getUniqueId();
-
-        int value = getStamina(player) - stamina;
-        if (value <= 0) value = 0;
-
-        playerStamina.put(uniqueId, value);
-        recoveryStaminaCoolDown.put(uniqueId, System.currentTimeMillis());
-
-        showProgressPercentage(player);
-    }
-
-    public void increaseStamina(Player player, int v) {
-        int stamina = getStamina(player);
-        int maxStamina = getMaxStamina(player);
-
-        UUID uniqueId = player.getUniqueId();
-
-        if (stamina < maxStamina) {
-            playerStamina.put(uniqueId, stamina + v);
-        } else {
-            playerStamina.put(uniqueId, maxStamina);
-        }
-
-        showProgressPercentage(player);
-    }
-
-    public int getMaxStamina(Player player) {
-        FileConfiguration config = Main.getInstance().getConfig();
-
         ConfigurationSection section = config.getConfigurationSection("体力上限设置");
 
         int stamina = 0;
@@ -121,23 +35,8 @@ public class StaminaManager extends BukkitRunnable {
             }
         }
 
-        if (stamina == 0) stamina = section.getInt("default");
+        if (stamina == 0) stamina = section.getInt("default", 20);
 
         return stamina;
-    }
-
-    private boolean isRecoveryStaminaCoolDown(Player player) {
-        ConfigurationSection config = Main.getInstance().getConfig().getConfigurationSection("体力恢复设置");
-        int cooldown = config.getInt("恢复间隔");
-
-        Long value = recoveryStaminaCoolDown.get(player.getUniqueId());
-        return value != null && System.currentTimeMillis() - value < cooldown;
-    }
-
-    public void clearCache(Player player) {
-        UUID uniqueId = player.getUniqueId();
-
-        playerStamina.remove(uniqueId);
-        recoveryStaminaCoolDown.remove(uniqueId);
     }
 }

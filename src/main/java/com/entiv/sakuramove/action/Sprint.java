@@ -1,11 +1,12 @@
 package com.entiv.sakuramove.action;
 
 import com.entiv.sakuramove.Main;
-import com.entiv.sakuramove.manager.StaminaManager;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -42,18 +43,41 @@ public class Sprint extends MoveAction {
         ItemStack itemStack = player.getInventory().getItemInMainHand();
 
         FileConfiguration config = Main.getInstance().getConfig();
-        List<String> allowItems = config.getStringList("移动行为.冲刺.允许物品");
+        ConfigurationSection section = config.getConfigurationSection("移动行为.冲刺.允许冲刺物品");
 
-        for (String allowItem : allowItems) {
-            boolean isAllowItem = itemStack.getType().toString().contains(allowItem);
+        Validate.notNull(section, "配置文件错误, 请检查配置文件");
 
-            if (!isAllowItem) continue;
+        boolean isAllowItem = false;
 
-            if (player.isSprinting() && !sprint.isCoolDown(player)) {
-                return true;
+        List<String> allowID = section.getStringList("id");
+        List<String> allowName = section.getStringList("name");
+        List<String> allowLore = section.getStringList("lore");
+
+        for (String id : allowID) {
+            if (itemStack.getType().toString().contains(id)) {
+                isAllowItem = true;
             }
         }
-        return false;
+
+        for (String name : allowName) {
+            if (itemStack.getItemMeta().getDisplayName().contains(name)) {
+                isAllowItem = true;
+            }
+        }
+
+        for (String key : allowLore) {
+            List<String> lore = itemStack.getItemMeta().getLore();
+            if (lore == null) break;
+
+            for (String string : lore) {
+                if (string.contains(key)) {
+                    isAllowItem = true;
+                    break;
+                }
+            }
+        }
+
+        return player.isSprinting() && !sprint.isCoolDown(player) && isAllowItem;
     }
 
     public boolean isCoolDown(Player player) {
@@ -65,9 +89,7 @@ public class Sprint extends MoveAction {
         coolDownPlayers.put(player.getUniqueId(), System.currentTimeMillis());
     }
 
-    @Override
     public void clearCache(Player player) {
-        super.clearCache(player);
         coolDownPlayers.remove(player.getUniqueId());
     }
 

@@ -80,10 +80,13 @@ dependencies {
 //    compile fileTree(dir: 'libs', include: ['*.jar'])
 //    compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
     compileOnly 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
+    compileOnly 'me.clip:placeholderapi:2.10.9'
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor "org.projectlombok:lombok:1.18.22"
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.22")
 //    compileOnly 'io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT'
 //    compileOnly 'org.jetbrains:annotations:16.0.2'
 //    compileOnly "com.github.MilkBowl:VaultAPI:1.7"
-//    compileOnly 'me.clip:placeholderapi:2.10.9'
 //    compileOnly 'net.md-5:bungeecord-chat:1.16-R0.1'
 }
 
