@@ -2,14 +2,12 @@ package com.entiv.sakuramove.action;
 
 import com.entiv.sakuramove.Main;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +37,7 @@ public class Sprint extends MoveAction {
     }
 
     @Override
+    @SuppressWarnings("hiding")
     public boolean canAccept(Player player) {
         ItemStack itemStack = player.getInventory().getItemInMainHand();
 
@@ -53,26 +52,37 @@ public class Sprint extends MoveAction {
         List<String> allowName = section.getStringList("name");
         List<String> allowLore = section.getStringList("lore");
 
+
+        if (itemStack == null || itemStack.getType().equals(Material.AIR)) return false;
         for (String id : allowID) {
             if (itemStack.getType().toString().contains(id)) {
                 isAllowItem = true;
             }
         }
 
-        for (String name : allowName) {
-            if (itemStack.getItemMeta().getDisplayName().contains(name)) {
-                isAllowItem = true;
+        ItemMeta itemMeta = itemStack.getItemMeta();
+
+        if (itemMeta == null) {
+            return player.isSprinting() && !sprint.isCoolDown(player) && isAllowItem;
+        }
+
+
+        if (itemMeta.getDisplayName() != null) {
+            for (String name : allowName) {
+                if (itemMeta.getDisplayName().contains(name)) {
+                    isAllowItem = true;
+                }
             }
         }
 
-        for (String key : allowLore) {
-            List<String> lore = itemStack.getItemMeta().getLore();
-            if (lore == null) break;
-
-            for (String string : lore) {
-                if (string.contains(key)) {
-                    isAllowItem = true;
-                    break;
+        List<String> lore = itemMeta.getLore();
+        if (lore != null) {
+            for (String key : allowLore) {
+                for (String string : lore) {
+                    if (string.contains(key)) {
+                        isAllowItem = true;
+                        break;
+                    }
                 }
             }
         }

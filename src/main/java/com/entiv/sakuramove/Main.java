@@ -1,8 +1,10 @@
 package com.entiv.sakuramove;
 
+import com.entiv.sakuramove.action.DoubleJump;
+import com.entiv.sakuramove.action.Sprint;
 import com.entiv.sakuramove.listener.PaperJumpListener;
 import com.entiv.sakuramove.listener.SpigotJumpListener;
-import com.entiv.sakuramove.listener.SpringListener;
+import com.entiv.sakuramove.listener.SprintListener;
 import com.entiv.sakuramove.listener.StaminaChangeListener;
 import com.entiv.sakuramove.manager.StaminaManager;
 import com.entiv.sakuramove.task.DynamicProgressTask;
@@ -13,10 +15,12 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+//TODO 增加后跳功能
 public class Main extends JavaPlugin {
 
     private static Main plugin;
@@ -52,7 +56,7 @@ public class Main extends JavaPlugin {
         saveDefaultConfig();
 
         if (getConfig().getBoolean("移动行为.冲刺.开启")) {
-            Bukkit.getPluginManager().registerEvents(new SpringListener(), this);
+            Bukkit.getPluginManager().registerEvents(new SprintListener(), this);
         }
 
         addTask();
@@ -72,9 +76,30 @@ public class Main extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+
         if (sender.isOp()) {
             reload();
             Message.send(sender, plugin.getConfig().getString("Message.Reload"));
+            return true;
+        }
+
+        Player player = sender instanceof Player ? ((Player) sender) : null;
+        if (player == null) return true;
+
+        if (args[0].equalsIgnoreCase("spring") && getConfig().getBoolean("移动行为.冲刺.开启")) {
+            Sprint sprint = Sprint.getInstance();
+            if (sprint.canAccept(player)) {
+                sprint.accept(player);
+                sprint.setCoolDown(player);
+            }
+        } else if (args[0].equalsIgnoreCase("doublejump") && getConfig().getBoolean("移动行为.二段跳.开启")){
+
+            DoubleJump doubleJump = DoubleJump.getInstance();
+
+            if (doubleJump.canAccept(player) && player.isOnGround()) {
+                doubleJump.accept(player);
+            }
+
         }
         return true;
     }
