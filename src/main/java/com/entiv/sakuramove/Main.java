@@ -20,9 +20,6 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Set;
-import java.util.UUID;
-
 //TODO 增加后跳功能
 public class Main extends JavaPlugin {
 
@@ -80,6 +77,7 @@ public class Main extends JavaPlugin {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
+        if (args.length == 0) return true;
         if (sender.isOp() && args[0].equalsIgnoreCase("reload")) {
             reload();
             Message.send(sender, plugin.getConfig().getString("Message.Reload"));
@@ -91,17 +89,18 @@ public class Main extends JavaPlugin {
 
         if (args[0].equalsIgnoreCase("sprint") && getConfig().getBoolean("移动行为.冲刺.开启")) {
             Sprint sprint = Sprint.getInstance();
-            if (sprint.canAccept(player)) {
-                sprint.accept(player);
-                sprint.setCoolDown(player);
-            }
-        } else if (args[0].equalsIgnoreCase("doublejump") && getConfig().getBoolean("移动行为.二段跳.开启")){
+
+            sprint.accept(player);
+            sprint.setCoolDown(player);
+
+        } else if (args[0].equalsIgnoreCase("doublejump") && getConfig().getBoolean("移动行为.二段跳.开启")) {
 
             DoubleJump doubleJump = DoubleJump.getInstance();
 
-            if (doubleJump.canAccept(player) && player.isOnGround()) {
+            if (player.isOnGround()) {
                 doubleJump.accept(player);
             }
+
         } else if (args[0].equalsIgnoreCase("toggle")) {
 
             if (SprintListener.disablePlayers.contains(player.getUniqueId())) {
