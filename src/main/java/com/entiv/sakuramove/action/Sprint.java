@@ -42,52 +42,18 @@ public class Sprint extends MoveAction {
         ItemStack itemStack = player.getInventory().getItemInMainHand();
 
         FileConfiguration config = Main.getInstance().getConfig();
-        ConfigurationSection section = config.getConfigurationSection("移动行为.冲刺.允许冲刺物品");
 
-        Validate.notNull(section, "配置文件错误, 请检查配置文件");
+        boolean needSprint = config.getBoolean("移动行为.冲刺.奔跑冲刺");
 
-        boolean isAllowItem = false;
-
-        List<String> allowID = section.getStringList("id");
-        List<String> allowName = section.getStringList("name");
-        List<String> allowLore = section.getStringList("lore");
-
-
-        if (itemStack == null || itemStack.getType().equals(Material.AIR)) return false;
-        for (String id : allowID) {
-            if (itemStack.getType().toString().contains(id)) {
-                isAllowItem = true;
-            }
+        if (needSprint && !player.isSprinting()) {
+            return false;
         }
 
-        ItemMeta itemMeta = itemStack.getItemMeta();
-
-        if (itemMeta == null) {
-            return player.isSprinting() && !sprint.isCoolDown(player) && isAllowItem;
+        if (!isAllowItem(itemStack)) {
+            return false;
         }
 
-
-        if (itemMeta.getDisplayName() != null) {
-            for (String name : allowName) {
-                if (itemMeta.getDisplayName().contains(name)) {
-                    isAllowItem = true;
-                }
-            }
-        }
-
-        List<String> lore = itemMeta.getLore();
-        if (lore != null) {
-            for (String key : allowLore) {
-                for (String string : lore) {
-                    if (string.contains(key)) {
-                        isAllowItem = true;
-                        break;
-                    }
-                }
-            }
-        }
-
-        return player.isSprinting() && !sprint.isCoolDown(player) && isAllowItem;
+        return !sprint.isCoolDown(player);
     }
 
     public boolean isCoolDown(Player player) {
@@ -105,5 +71,50 @@ public class Sprint extends MoveAction {
 
     public static Sprint getInstance() {
         return sprint;
+    }
+
+    private boolean isAllowItem(ItemStack itemStack) {
+        FileConfiguration config = Main.getInstance().getConfig();
+        ConfigurationSection section = config.getConfigurationSection("移动行为.冲刺.允许冲刺物品");
+
+        Validate.notNull(section, "配置文件错误, 请检查配置文件");
+
+        List<String> allowID = section.getStringList("id");
+        List<String> allowName = section.getStringList("name");
+        List<String> allowLore = section.getStringList("lore");
+
+        if (itemStack == null || itemStack.getType().equals(Material.AIR)) return false;
+        for (String id : allowID) {
+            if (itemStack.getType().toString().contains(id)) {
+                return true;
+            }
+        }
+
+        ItemMeta itemMeta = itemStack.getItemMeta();
+
+        if (itemMeta == null) {
+            return false;
+        }
+
+        if (itemMeta.getDisplayName() != null) {
+            for (String name : allowName) {
+                if (itemMeta.getDisplayName().contains(name)) {
+                    return true;
+                }
+            }
+        }
+
+        List<String> lore = itemMeta.getLore();
+        if (lore != null) {
+            for (String key : allowLore) {
+                for (String string : lore) {
+                    if (string.contains(key)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 }
