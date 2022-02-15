@@ -119,15 +119,11 @@ public class Main extends JavaPlugin {
 
         reloadConfig();
 
-        boolean enableFallDamage = getConfig().getBoolean("移动行为.二段跳.摔落伤害");
-
         HandlerList.unregisterAll(doubleJump);
 
         if (!getConfig().getBoolean("移动行为.二段跳.开启")) return;
 
-        if (enableFallDamage) {
-            Bukkit.getPluginManager().registerEvents(doubleJump, this);
-        }
+        Bukkit.getPluginManager().registerEvents(doubleJump, this);
 
     }
 
