@@ -36,7 +36,6 @@ public abstract class MoveAction {
     }
 
     public void accept(Player player) {
-
         StaminaManager staminaManager = getStaminaManager();
         StaminaPlayer staminaPlayer = staminaManager.getPlayer(player);
         if (staminaPlayer.getCurrentStamina() < stamina) return;

@@ -5,4 +5,4 @@ api-version: 1.13
 
 commands:
   SakuraMove:
-    description: 樱花移动指令
+    description: "description"

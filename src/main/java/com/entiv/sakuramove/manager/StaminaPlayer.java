@@ -41,6 +41,8 @@ public class StaminaPlayer {
         }
 
         currentStamina = after;
+        progressState.setAfter(after);
+
         Bukkit.getPluginManager().callEvent(new StaminaChangeEvent(player, before, after));
     }
 
@@ -50,6 +52,7 @@ public class StaminaPlayer {
         if (after <= 0) after = 0;
 
         currentStamina = after;
+        progressState.setAfter(after);
 
         Main.getInstance().getStaminaManager().cooldownManager.setCooldownMillisecond(player, Main.getInstance().getConfig().getInt("体力恢复设置.恢复间隔", 1000));
         Bukkit.getPluginManager().callEvent(new StaminaChangeEvent(player, before, after));

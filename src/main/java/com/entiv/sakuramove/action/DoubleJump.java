@@ -8,12 +8,16 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public class DoubleJump extends MoveAction {
 
     private static final DoubleJump doubleJump = new DoubleJump("移动行为.二段跳");
     private final double springPower;
+    private final Set<UUID> jumpingCache = new HashSet<>();
 
     public DoubleJump(String path) {
         super(path);
@@ -36,7 +40,11 @@ public class DoubleJump extends MoveAction {
 
     @Override
     public boolean canAccept(Player player) {
-        if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR || player.hasPermission("sakuramove.fly")) {
+        if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) {
+            return false;
+        }
+
+        if (player.hasPermission("sakuramove.fly") || jumpingCache.contains(player.getUniqueId())) {
             return false;
         }
 
@@ -47,6 +55,8 @@ public class DoubleJump extends MoveAction {
         if (getStaminaManager().getPlayer(player).hasEnoughStamina(stamina)) {
             player.setAllowFlight(true);
             player.setFlying(false);
+
+            jumpingCache.remove(player.getUniqueId());
         }
     }
 
@@ -58,6 +68,7 @@ public class DoubleJump extends MoveAction {
     @Override
     public void accept(Player player) {
         super.accept(player);
+        jumpingCache.add(player.getUniqueId());
     }
 
     public static DoubleJump getInstance() {

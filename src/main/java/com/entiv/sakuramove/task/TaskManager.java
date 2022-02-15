@@ -1,5 +1,6 @@
 package com.entiv.sakuramove.task;
 
+import com.entiv.sakuramove.utils.Performance;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -13,7 +14,6 @@ public class TaskManager extends BukkitRunnable {
 
     @Override
     public void run() {
-
         if (++tick == Long.MAX_VALUE) {
             tick = 0;
         }

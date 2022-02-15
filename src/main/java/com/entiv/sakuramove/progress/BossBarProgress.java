@@ -35,9 +35,7 @@ public class BossBarProgress implements Progress {
 
         StaminaPlayer staminaPlayer = staminaManager.getPlayer(player);
         int maxStamina = staminaPlayer.getMaxStamina();
-
         ProgressState progressState = staminaPlayer.getProgressState();
-        progressState.setAfter(after);
 
         BukkitRunnable runnable = new BukkitRunnable() {
             @Override

@@ -2,12 +2,12 @@ package com.entiv.sakuramove;
 
 import com.entiv.sakuramove.action.DoubleJump;
 import com.entiv.sakuramove.action.Sprint;
-import com.entiv.sakuramove.listener.PaperJumpListener;
-import com.entiv.sakuramove.listener.SpigotJumpListener;
+import com.entiv.sakuramove.listener.DoubleJumpListener;
 import com.entiv.sakuramove.listener.SprintListener;
 import com.entiv.sakuramove.listener.StaminaChangeListener;
 import com.entiv.sakuramove.manager.StaminaManager;
 import com.entiv.sakuramove.task.DynamicProgressTask;
+import com.entiv.sakuramove.task.JumpingCheckTask;
 import com.entiv.sakuramove.task.RecoveryStaminaTask;
 import com.entiv.sakuramove.task.TaskManager;
 import com.entiv.sakuramove.utils.Message;
@@ -20,10 +20,14 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-//TODO 增加后跳功能
+import java.text.MessageFormat;
+import java.util.logging.Level;
+
+//TODO 增加后跳功能, 挖掘方块，放置方块，鞘翅飞行，持续奔跑，提示消息展示体力值
 public class Main extends JavaPlugin {
 
     private static Main plugin;
+    private boolean debug = false;
 
     @Getter
     private StaminaManager staminaManager;
@@ -46,11 +50,7 @@ public class Main extends JavaPlugin {
         };
         getServer().getConsoleSender().sendMessage(message);
 
-        if (isPaperFork()) {
-            doubleJump = new PaperJumpListener();
-        } else {
-            doubleJump = new SpigotJumpListener();
-        }
+        doubleJump = new DoubleJumpListener();
 
         reload();
         saveDefaultConfig();
@@ -78,6 +78,7 @@ public class Main extends JavaPlugin {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if (args.length == 0) return true;
+
         if (sender.isOp() && args[0].equalsIgnoreCase("reload")) {
             reload();
             Message.send(sender, plugin.getConfig().getString("Message.Reload"));
@@ -97,7 +98,7 @@ public class Main extends JavaPlugin {
 
             DoubleJump doubleJump = DoubleJump.getInstance();
 
-            if (player.isOnGround()) {
+            if (player.getAllowFlight()) {
                 doubleJump.accept(player);
             }
 
@@ -140,21 +141,20 @@ public class Main extends JavaPlugin {
     private void addTask() {
         RecoveryStaminaTask recoveryStaminaTask = new RecoveryStaminaTask(getConfig().getInt("体力恢复设置.恢复速度", 1));
         DynamicProgressTask dynamicProgressTask = new DynamicProgressTask(1);
+        JumpingCheckTask jumpingCheckTask = new JumpingCheckTask(2);
 
         taskManager.addTask(recoveryStaminaTask);
         taskManager.addTask(dynamicProgressTask);
+        taskManager.addTask(jumpingCheckTask);
     }
 
     public static Main getInstance() {
         return plugin;
     }
 
-    private static boolean isPaperFork() {
-        try {
-            Class.forName("com.destroystokyo.paper.event.player.PlayerJumpEvent");
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
+    public static void debug(String message, Object... objects) {
+        if (getInstance().debug) {
+            Bukkit.getLogger().log(Level.INFO, MessageFormat.format(message, objects));
         }
     }
 }

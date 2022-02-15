@@ -31,7 +31,7 @@ public class RecoveryStaminaTask extends TimerTask {
             Player player = Bukkit.getPlayer(uuid);
 
             if (player == null) {
-                return;
+                continue;
             }
 
             StaminaPlayer staminaPlayer = staminaManager.getPlayer(player);

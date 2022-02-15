@@ -17,18 +17,13 @@ public class DynamicProgressTask extends TimerTask {
 
     @Override
     public void hasNext() {
-
-        Iterator<StaminaPlayer> iterator = staminaManager.players.values().iterator();
-
-        while (iterator.hasNext()) {
-            StaminaPlayer staminaPlayer = iterator.next();
+        for (StaminaPlayer staminaPlayer : staminaManager.players.values()) {
             ProgressState progressState = staminaPlayer.getProgressState();
 
             int current = progressState.getCurrent();
             int after = progressState.getAfter();
 
-            if (!staminaPlayer.getPlayer().isOnline()) {
-                iterator.remove();
+            if (!staminaPlayer.getPlayer().isOnline() || progressState.getAfter() > staminaPlayer.getMaxStamina()) {
                 continue;
             }
 
@@ -36,10 +31,6 @@ public class DynamicProgressTask extends TimerTask {
                 progressState.setCurrent(current - 1);
             } else if (current < after) {
                 progressState.setCurrent(current + 1);
-            }
-
-            if (progressState.getCurrent() == staminaPlayer.getMaxStamina()) {
-                iterator.remove();
             }
         }
     }

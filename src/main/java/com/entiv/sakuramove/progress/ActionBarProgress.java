@@ -31,7 +31,6 @@ public class ActionBarProgress implements Progress {
         int maxStamina = staminaPlayer.getMaxStamina();
 
         ProgressState progressState = staminaPlayer.getProgressState();
-        progressState.setAfter(after);
 
         BukkitRunnable runnable = new BukkitRunnable() {
             @Override
