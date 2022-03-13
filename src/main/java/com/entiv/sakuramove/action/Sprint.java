@@ -43,6 +43,10 @@ public class Sprint extends MoveAction {
 
         FileConfiguration config = Main.getInstance().getConfig();
 
+        if (!player.hasPermission("sakuramove.sprint")) {
+            return false;
+        }
+
         boolean needSprint = config.getBoolean("移动行为.冲刺.奔跑冲刺");
 
         if (needSprint && !player.isSprinting()) {

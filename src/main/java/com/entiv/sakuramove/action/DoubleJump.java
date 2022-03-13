@@ -40,6 +40,10 @@ public class DoubleJump extends MoveAction {
 
     @Override
     public boolean canAccept(Player player) {
+        if (!player.hasPermission("sakuramove.doublejump")) {
+            return false;
+        }
+
         if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) {
             return false;
         }
