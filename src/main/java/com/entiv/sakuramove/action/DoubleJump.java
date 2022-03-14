@@ -62,14 +62,16 @@ public class DoubleJump extends MoveAction {
 
     public void enable(Player player) {
         if (getStaminaManager().getPlayer(player).hasEnoughStamina(getStamina())) {
-            sendAllowFlightPacket(player, true);
+            player.setAllowFlight(true);
+            player.setFlying(false);
 
             jumpingCache.remove(player.getUniqueId());
         }
     }
 
     public void disable(Player player) {
-        sendAllowFlightPacket(player, false);
+        player.setAllowFlight(false);
+        player.setFlying(false);
     }
 
     @Override
