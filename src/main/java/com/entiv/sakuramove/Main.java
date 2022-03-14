@@ -5,7 +5,6 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.entiv.sakuramove.action.DoubleJump;
 import com.entiv.sakuramove.action.Sprint;
-import com.entiv.sakuramove.listener.DoubleJumpListener;
 import com.entiv.sakuramove.listener.PacketJumpListener;
 import com.entiv.sakuramove.listener.SprintListener;
 import com.entiv.sakuramove.listener.StaminaChangeListener;
@@ -55,7 +54,13 @@ public class Main extends JavaPlugin {
         getServer().getConsoleSender().sendMessage(message);
 
         if (getConfig().getBoolean("移动行为.二段跳.开启")) {
-            doubleJump = new DoubleJumpListener();
+            doubleJump = new PacketJumpListener();
+            ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
+            protocolManager.removePacketListeners(this);
+
+            if (doubleJump instanceof PacketAdapter) {
+                protocolManager.addPacketListener((PacketAdapter) doubleJump);
+            }
         }
 
         reload();
