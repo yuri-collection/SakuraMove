@@ -1,8 +1,12 @@
 package com.entiv.sakuramove;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.PacketAdapter;
 import com.entiv.sakuramove.action.DoubleJump;
 import com.entiv.sakuramove.action.Sprint;
 import com.entiv.sakuramove.listener.DoubleJumpListener;
+import com.entiv.sakuramove.listener.PacketJumpListener;
 import com.entiv.sakuramove.listener.SprintListener;
 import com.entiv.sakuramove.listener.StaminaChangeListener;
 import com.entiv.sakuramove.manager.StaminaManager;
@@ -50,7 +54,9 @@ public class Main extends JavaPlugin {
         };
         getServer().getConsoleSender().sendMessage(message);
 
-        doubleJump = new DoubleJumpListener();
+        if (getConfig().getBoolean("移动行为.二段跳.开启")) {
+            doubleJump = new DoubleJumpListener();
+        }
 
         reload();
         saveDefaultConfig();
@@ -89,16 +95,19 @@ public class Main extends JavaPlugin {
         if (player == null) return true;
 
         if (args[0].equalsIgnoreCase("sprint") && getConfig().getBoolean("移动行为.冲刺.开启")) {
+
             Sprint sprint = Sprint.getInstance();
 
-            sprint.accept(player);
-            sprint.setCoolDown(player);
+            if (sprint.canAccept(player)) {
+                sprint.accept(player);
+                sprint.setCoolDown(player);
+            }
 
         } else if (args[0].equalsIgnoreCase("doublejump") && getConfig().getBoolean("移动行为.二段跳.开启")) {
 
             DoubleJump doubleJump = DoubleJump.getInstance();
 
-            if (player.getAllowFlight()) {
+            if (player.getAllowFlight() && doubleJump.canAccept(player)) {
                 doubleJump.accept(player);
             }
 

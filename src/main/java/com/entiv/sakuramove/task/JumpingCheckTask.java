@@ -4,6 +4,7 @@ import com.entiv.sakuramove.action.DoubleJump;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+
 public class JumpingCheckTask extends TimerTask {
 
     public JumpingCheckTask(int period) {
@@ -13,18 +14,10 @@ public class JumpingCheckTask extends TimerTask {
     @Override
     public void hasNext() {
 
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            final boolean isFalling = player.getVelocity().getY() < -0.1;
-
-            if (player.isOnGround()) {
-                DoubleJump.getInstance().enable(player);
-            } else if (isFalling) {
-                DoubleJump.getInstance().disable(player);
-            }
-        }
         Bukkit.getOnlinePlayers()
                 .stream()
                 .filter(Player::isOnGround)
+                .filter(player -> player.hasPermission("sakuramove.doublejump"))
                 .forEach(player -> DoubleJump.getInstance().enable(player));
     }
 }

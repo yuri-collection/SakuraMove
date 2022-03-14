@@ -12,36 +12,31 @@ import java.util.function.Consumer;
 
 public abstract class MoveAction {
 
-    protected final int stamina;
-    protected final double power;
-
-    public MoveAction(int stamina) {
-        this.stamina = stamina;
-        this.power = 1;
-    }
-
-    public MoveAction(double power, int stamina) {
-        this.stamina = stamina;
-        this.power = power;
-    }
+    private final String path;
 
     public MoveAction(String path) {
-        FileConfiguration config = Main.getInstance().getConfig();
-        ConfigurationSection section = config.getConfigurationSection(path);
-
-        Validate.notNull(section, "配置文件错误, 请检查配置文件");
-
-        power = section.getDouble("行动强度");
-        stamina = section.getInt("所需体力");
+        this.path = path;
     }
 
     public void accept(Player player) {
         StaminaManager staminaManager = getStaminaManager();
         StaminaPlayer staminaPlayer = staminaManager.getPlayer(player);
-        if (staminaPlayer.getCurrentStamina() < stamina) return;
+        if (staminaPlayer.getCurrentStamina() < getStamina()) return;
 
-        staminaPlayer.decreaseStamina(stamina);
+        staminaPlayer.decreaseStamina(getStamina());
         behavior().accept(player);
+    }
+
+    public ConfigurationSection getConfig() {
+        return Main.getInstance().getConfig().getConfigurationSection(path);
+    }
+
+    public int getStamina() {
+        return getConfig().getInt("所需体力");
+    }
+
+    public double getPower() {
+        return getConfig().getDouble("行动强度");
     }
 
     public StaminaManager getStaminaManager() {

@@ -31,7 +31,7 @@ public class Sprint extends MoveAction {
             Location location = player.getLocation();
 
             player.playSound(location, Sound.ENTITY_BAT_TAKEOFF, 10, 0);
-            player.setVelocity(location.getDirection().setY(0).multiply(power));
+            player.setVelocity(location.getDirection().setY(0).multiply(getPower()));
             world.spawnParticle(Particle.CRIT, location, 10);
         };
     }
