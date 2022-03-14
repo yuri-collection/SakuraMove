@@ -17,7 +17,7 @@ public class JumpingCheckTask extends TimerTask {
         Bukkit.getOnlinePlayers()
                 .stream()
                 .filter(Player::isOnGround)
-                .filter(player -> player.hasPermission("sakuramove.doublejump"))
+                .filter(player -> DoubleJump.getInstance().canAccept(player))
                 .forEach(player -> DoubleJump.getInstance().enable(player));
     }
 }
