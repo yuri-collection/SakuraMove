@@ -107,7 +107,7 @@ public class Main extends JavaPlugin {
 
             DoubleJump doubleJump = DoubleJump.getInstance();
 
-            if (player.getAllowFlight() && doubleJump.canAccept(player)) {
+            if (doubleJump.canAccept(player)) {
                 doubleJump.accept(player);
             }
 
