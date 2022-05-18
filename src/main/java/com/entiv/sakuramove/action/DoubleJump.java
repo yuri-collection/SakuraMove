@@ -53,11 +53,7 @@ public class DoubleJump extends MoveAction {
             return false;
         }
 
-        if (player.hasPermission("sakuramove.fly") || jumpingCache.contains(player.getUniqueId())) {
-            return false;
-        }
-
-        return player.isOp() || !player.hasPermission("sakuramove.fly");
+        return !jumpingCache.contains(player.getUniqueId());
     }
 
     public void enable(Player player) {
@@ -85,21 +81,5 @@ public class DoubleJump extends MoveAction {
         return doubleJump;
     }
 
-    public void sendAllowFlightPacket(Player player, boolean canFly) {
-        PacketContainer packetContainer = new PacketContainer(PacketType.Play.Server.ABILITIES);
-        StructureModifier<Boolean> booleanModifier = packetContainer.getBooleans();
-        booleanModifier.write(0, player.isInvulnerable());
-        booleanModifier.write(1, player.isFlying());
-        booleanModifier.write(2, canFly);
-        booleanModifier.write(3, player.getGameMode() == GameMode.CREATIVE);
-        StructureModifier<Float> floatModifier = packetContainer.getFloat();
-        floatModifier.write(0, player.getFlySpeed());
-        floatModifier.write(1, player.getWalkSpeed());
-        try {
-            ProtocolLibrary.getProtocolManager().sendServerPacket(player, packetContainer, false);
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-    }
 }
 

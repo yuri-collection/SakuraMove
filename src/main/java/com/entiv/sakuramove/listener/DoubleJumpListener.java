@@ -16,9 +16,13 @@ public class DoubleJumpListener implements Listener {
     public void onDoubleJump(PlayerToggleFlightEvent event) {
         final Player player = event.getPlayer();
 
+        if (player.hasPermission("sakuramove.fly")) {
+            return;
+        }
+
         if (doubleJump.canAccept(player)) {
-            doubleJump.accept(player);
             event.setCancelled(true);
+            doubleJump.accept(player);
         }
     }
 

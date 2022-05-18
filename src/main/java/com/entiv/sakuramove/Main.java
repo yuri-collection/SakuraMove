@@ -6,7 +6,6 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.entiv.sakuramove.action.DoubleJump;
 import com.entiv.sakuramove.action.Sprint;
 import com.entiv.sakuramove.listener.DoubleJumpListener;
-import com.entiv.sakuramove.listener.PacketJumpListener;
 import com.entiv.sakuramove.listener.SprintListener;
 import com.entiv.sakuramove.listener.StaminaChangeListener;
 import com.entiv.sakuramove.manager.StaminaManager;
@@ -98,7 +97,11 @@ public class Main extends JavaPlugin {
 
             Sprint sprint = Sprint.getInstance();
 
-            if (sprint.canAccept(player)) {
+            if (!player.hasPermission("sakuramove.sprint")) {
+                return true;
+            }
+
+            if (!sprint.isCoolDown(player)) {
                 sprint.accept(player);
                 sprint.setCoolDown(player);
             }

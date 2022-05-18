@@ -9,11 +9,12 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 public class BreakBlockListener implements Listener {
 
-//    @EventHandler
-//    private void onPlayerBreakBlock(BlockBreakEvent event) {
-//        final Player player = event.getPlayer();
-//        final StaminaPlayer staminaPlayer = Main.getInstance().getStaminaManager().getPlayer(player);
-//
-//        staminaPlayer.getCurrentStamina();
-//    }
+    @EventHandler
+    private void onPlayerBreakBlock(BlockBreakEvent event) {
+        final Player player = event.getPlayer();
+        final StaminaPlayer staminaPlayer = Main.getInstance().getStaminaManager().getPlayer(player);
+
+        final int currentStamina = staminaPlayer.getCurrentStamina();
+
+    }
 }
