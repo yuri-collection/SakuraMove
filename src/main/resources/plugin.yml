@@ -5,6 +5,8 @@ api-version: 1.13
 softdepend:
   - PlaceholderAPI
   - ProtocolLib
+  - Essentials
+  - CMI
 
 commands:
   SakuraMove:

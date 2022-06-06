@@ -1,10 +1,8 @@
 package com.entiv.sakuramove;
 
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.PacketAdapter;
 import com.entiv.sakuramove.action.DoubleJump;
 import com.entiv.sakuramove.action.Sprint;
+import com.entiv.sakuramove.listener.BlockListener;
 import com.entiv.sakuramove.listener.DoubleJumpListener;
 import com.entiv.sakuramove.listener.SprintListener;
 import com.entiv.sakuramove.listener.StaminaChangeListener;
@@ -14,6 +12,7 @@ import com.entiv.sakuramove.task.JumpingCheckTask;
 import com.entiv.sakuramove.task.RecoveryStaminaTask;
 import com.entiv.sakuramove.task.TaskManager;
 import com.entiv.sakuramove.utils.Message;
+import jdk.nashorn.internal.ir.Block;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -26,7 +25,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.text.MessageFormat;
 import java.util.logging.Level;
 
-//TODO 增加后跳功能, 挖掘方块，放置方块，鞘翅飞行，持续奔跑，提示消息展示体力值
+//TODO 增加后跳功能，鞘翅飞行，持续奔跑，提示消息展示体力值
 public class Main extends JavaPlugin {
 
     private static Main plugin;
@@ -67,6 +66,7 @@ public class Main extends JavaPlugin {
         addTask();
         registerPlaceholder();
 
+        Bukkit.getPluginManager().registerEvents(new BlockListener(), this);
         Bukkit.getPluginManager().registerEvents(new StaminaChangeListener(), this);
     }
 

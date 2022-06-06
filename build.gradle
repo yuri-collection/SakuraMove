@@ -77,22 +77,15 @@ processResources {
 }
 
 dependencies {
-//    compileOnly 'fr.xephi:authme:5.6.0-SNAPSHOT'
-//    compileOnly 'net.ess3:EssentialsX:2.17.2'
-//    compileOnly 'world.bentobox:bentobox:1.16.1-SNAPSHOT'
-    compileOnly group: "com.comphenix.protocol", name: "ProtocolLib", version: "4.6.0";
+    compileOnly group: "com.comphenix.protocol", name: "ProtocolLib", version: "4.6.0"
     compileOnly fileTree(dir: 'libs', include: ['*.jar'])
-//    compileOnly 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
     compileOnly 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
     compileOnly 'me.clip:placeholderapi:2.10.9'
     compileOnly 'org.projectlombok:lombok:1.18.22'
     annotationProcessor "org.projectlombok:lombok:1.18.22"
     testAnnotationProcessor("org.projectlombok:lombok:1.18.22")
-//    compileOnly 'io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT'
     compileOnly 'org.jetbrains:annotations:22.0.0'
-//    compileOnly "com.github.MilkBowl:VaultAPI:1.7"
-//    compileOnly 'net.md-5:bungeecord-chat:1.16-R0.1'
 }
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-libsDirName = 'C:\\Users\\EnTIv\\Desktop\\minecraft\\server\\paper-1.17\\plugins'
+//libsDirName = 'C:\\Users\\EnTIv\\Desktop\\minecraft\\server\\paper-1.17\\plugins'
