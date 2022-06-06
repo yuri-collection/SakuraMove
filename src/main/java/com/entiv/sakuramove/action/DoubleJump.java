@@ -58,7 +58,6 @@ public class DoubleJump extends MoveAction {
 
     public void enable(Player player) {
         if (getStaminaManager().getPlayer(player).hasEnoughStamina(getStamina())) {
-            System.out.println("fly enable");
             player.setAllowFlight(true);
             player.setFlying(false);
 

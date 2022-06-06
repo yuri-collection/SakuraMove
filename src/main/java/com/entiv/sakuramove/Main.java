@@ -12,7 +12,6 @@ import com.entiv.sakuramove.task.JumpingCheckTask;
 import com.entiv.sakuramove.task.RecoveryStaminaTask;
 import com.entiv.sakuramove.task.TaskManager;
 import com.entiv.sakuramove.utils.Message;
-import jdk.nashorn.internal.ir.Block;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

@@ -17,14 +17,16 @@ public class BlockListener implements Listener {
         final FileConfiguration config = Main.getInstance().getConfig();
         final ConfigurationSection section = config.getConfigurationSection("其他行为.破坏方块");
 
-        if (section == null || section.getBoolean("开启")) return;
+        if (section == null || !section.getBoolean("开启")) return;
 
         final Player player = event.getPlayer();
         final StaminaPlayer staminaPlayer = Main.getInstance().getStaminaManager().getPlayer(player);
 
         final int currentStamina = staminaPlayer.getCurrentStamina();
 
-        if (currentStamina < section.getInt("所需体力")) {
+        final int needStamina = section.getInt("所需体力");
+
+        if (currentStamina < needStamina) {
             event.setCancelled(true);
 
             final String message = config.getString("Message.破坏方块");
@@ -32,6 +34,8 @@ public class BlockListener implements Listener {
             if (message != null && !message.isEmpty()) {
                 player.sendMessage(message);
             }
+        } else {
+            staminaPlayer.decreaseStamina(needStamina);
         }
     }
 
@@ -40,7 +44,7 @@ public class BlockListener implements Listener {
         final FileConfiguration config = Main.getInstance().getConfig();
         final ConfigurationSection section = config.getConfigurationSection("其他行为.放置方块");
 
-        if (section == null || section.getBoolean("开启")) return;
+        if (section == null || !section.getBoolean("开启")) return;
 
         final Player player = event.getPlayer();
         final StaminaPlayer staminaPlayer = Main.getInstance().getStaminaManager().getPlayer(player);
@@ -55,6 +59,8 @@ public class BlockListener implements Listener {
             if (message != null && !message.isEmpty()) {
                 player.sendMessage(message);
             }
+        } else {
+            staminaPlayer.decreaseStamina(section.getInt("所需体力"));
         }
     }
 }
