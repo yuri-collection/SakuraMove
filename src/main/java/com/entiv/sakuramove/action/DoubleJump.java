@@ -21,7 +21,6 @@ import java.util.function.Consumer;
 public class DoubleJump extends MoveAction {
 
     private static final DoubleJump doubleJump = new DoubleJump("移动行为.二段跳");
-    private final Set<UUID> jumpingCache = new HashSet<>();
 
     public DoubleJump(String path) {
         super(path);
@@ -49,19 +48,13 @@ public class DoubleJump extends MoveAction {
             return false;
         }
 
-        if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) {
-            return false;
-        }
-
-        return !jumpingCache.contains(player.getUniqueId());
+        return player.getGameMode() != GameMode.CREATIVE && player.getGameMode() != GameMode.SPECTATOR;
     }
 
     public void enable(Player player) {
         if (getStaminaManager().getPlayer(player).hasEnoughStamina(getStamina())) {
             player.setAllowFlight(true);
             player.setFlying(false);
-
-            jumpingCache.remove(player.getUniqueId());
         }
     }
 
@@ -73,7 +66,6 @@ public class DoubleJump extends MoveAction {
     @Override
     public void accept(Player player) {
         super.accept(player);
-        jumpingCache.add(player.getUniqueId());
         disable(player);
     }
 
